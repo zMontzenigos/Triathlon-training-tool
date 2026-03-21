@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-navy-950 text-white antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  /* Discipline left-border utilities (needed because Tailwind JIT can't infer dynamic class names) */
+  .border-l-swim     { border-left-color: #3182ce; }
+  .border-l-bike     { border-left-color: #38a169; }
+  .border-l-run      { border-left-color: #e53e3e; }
+  .border-l-brick    { border-left-color: #ed8936; }
+  .border-l-climbing { border-left-color: #d69e2e; }
+}

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/zach/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python3 scripts/search.py \"triathlon sports training tracker dashboard athletic dark mode\" --design-system -p \"Triathlon Training Tool\" -f markdown)",
+      "Bash(python \"C:/Users/zach/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"triathlon sports training tracker dashboard athletic dark mode\" --design-system -p \"Triathlon Training Tool\" -f markdown)",
+      "Bash(where python3:*)",
+      "Bash(where python:*)",
+      "Read(//usr/**)",
+      "Bash(C:/Users/zach/AppData/Local/Microsoft/WindowsApps/python3.exe \"C:/Users/zach/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"triathlon sports training tracker dashboard athletic dark mode\" --design-system -p \"Triathlon Training Tool\" -f markdown)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

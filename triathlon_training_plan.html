@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympic Triathlon Training - June 20, 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #2d3748;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .race-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .race-stat {
+            text-align: center;
+        }
+        
+        .race-stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #48bb78;
+        }
+        
+        .race-stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        /* Overall Summary */
+        .overall-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+        }
+        
+        .summary-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        
+        .summary-discipline {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .summary-distance {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .summary-time {
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+        
+        .summary-totals {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            text-align: center;
+            font-size: 1.1em;
+        }
+        
+        /* Week Sections */
+        .week-section {
+            margin-bottom: 20px;
+        }
+        
+        .week-header {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .week-header:hover {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+        }
+        
+        .week-header.completed {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        
+        .week-header.completed:hover {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+        }
+        
+        .collapse-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+        }
+        
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        .week-content {
+            max-height: 5000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .week-content.collapsed {
+            max-height: 50px; /* Compact summary when collapsed */
+        }
+        
+        /* Compact summary for collapsed weeks */
+        .week-metrics-compact {
+            padding: 12px 20px;
+            background: white;
+            display: none; /* Hidden by default */
+            font-size: 0.95em;
+            color: #2d3748;
+        }
+        
+        .week-metrics-compact.completed-bg {
+            background: #f0fff4;
+        }
+        
+        .week-content.collapsed .week-metrics-compact {
+            display: flex; /* Show when collapsed */
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .week-content.collapsed .week-metrics {
+            display: none; /* Hide full metrics when collapsed */
+        }
+        
+        .compact-metric {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .compact-metric-value {
+            font-weight: 600;
+        }
+        
+        .compact-swim { color: #3182ce; }
+        .compact-bike { color: #38a169; }
+        .compact-run { color: #e53e3e; }
+        .compact-total { color: #2d3748; }
+        
+        /* Metrics Summary */
+        .week-metrics {
+            padding: 20px;
+            background: white;
+        }
+        
+        .week-metrics.completed-bg {
+            background: #f0fff4; /* Light green background for completed weeks */
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 12px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        
+        .metric-label {
+            font-size: 0.85em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        
+        .metric-value.swim { color: #3182ce; }
+        .metric-value.bike { color: #38a169; }
+        .metric-value.run { color: #e53e3e; }
+        
+        .metric-subvalue {
+            font-size: 1.1em;
+            margin-top: 4px;
+            color: #4a5568;
+        }
+        
+        .metrics-total {
+            text-align: center;
+            padding: 10px;
+            background: #f7fafc;
+            border-radius: 8px;
+            font-size: 1.05em;
+            color: #2d3748;
+        }
+        
+        /* Day Cards */
+        .day {
+            background: white;
+            padding: 20px;
+            margin: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #e2e8f0;
+        }
+        
+        .day.completed {
+            background: #c6f6d5;
+            border-left: 4px solid #38a169;
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .day-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .day-type {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .day-type.swim { background: #bee3f8; color: #2c5282; }
+        .day-type.bike { background: #c6f6d5; color: #22543d; }
+        .day-type.run { background: #fed7d7; color: #742a2a; }
+        .day-type.brick { background: #feebc8; color: #7c2d12; }
+        .day-type.climbing { background: #fef5e7; color: #744210; }
+        .day-type.rest { background: #e2e8f0; color: #2d3748; }
+        
+        .session-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .session-details {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .notes {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f7fafc;
+            border-left: 3px solid #4299e1;
+            font-style: italic;
+            color: #2d3748;
+        }
+        
+        /* Splits */
+        .splits-toggle {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #4299e1;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.85em;
+            cursor: pointer;
+            user-select: none;
+            margin-top: 10px;
+        }
+        
+        .splits-toggle:hover {
+            background: #3182ce;
+        }
+        
+        .splits-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .splits-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .splits-table {
+            margin-top: 15px;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        .splits-table th {
+            background: #e2e8f0;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #cbd5e0;
+        }
+        
+        .splits-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .splits-table tr:hover {
+            background: #f7fafc;
+        }
+        
+        .split-number {
+            color: #718096;
+            font-weight: 600;
+        }
+        
+        .split-time {
+            color: #2d3748;
+            font-family: monospace;
+        }
+        
+        .split-hr {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+        
+        .swim-splits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 4px;
+            margin-top: 10px;
+        }
+        
+        .lap-time {
+            background: #e2e8f0;
+            padding: 4px;
+            text-align: center;
+            font-size: 0.85em;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .summary-grid, .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-totals {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Mobile: make compact metrics wrap and smaller */
+            .week-metrics-compact {
+                padding: 10px 15px;
+                font-size: 0.8em;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .compact-metric {
+                gap: 4px;
+                min-width: 45%;
+            }
+            
+            .compact-metric:last-child {
+                width: 100%;
+                justify-content: center;
+                border-top: 1px solid rgba(0,0,0,0.1);
+                padding-top: 8px;
+                margin-top: 4px;
+            }
+            
+            .week-content.collapsed {
+                max-height: 90px; /* More height for wrapped content on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏊‍♂️🚴‍♂️🏃‍♂️ Olympic Triathlon Training</h1>
+            <div class="race-info">
+                <div class="race-stat">
+                    <div class="race-stat-value" id="weeks-to-race">--</div>
+                    <div class="race-stat-label">Weeks to Race</div>
+                </div>
+                <div class="race-stat">
+                    <div class="race-stat-value">June 20, 2026</div>
+                    <div class="race-stat-label">Race Day</div>
+                </div>
+                <div class="race-stat">
+                    <div class="race-stat-value">1.5 / 40 / 10</div>
+                    <div class="race-stat-label">Swim / Bike / Run (km)</div>
+                </div>
+            </div>
+            <button onclick="jumpToToday()" style="
+                margin-top: 15px;
+                padding: 10px 20px;
+                background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+            ">📍 Jump to Today</button>
+        </div>
+
+        <div class="overall-summary">
+            <div class="summary-title">📊 Overall Training Summary</div>
+            <div id="overall-metrics-container"></div>
+        </div>
+
+        <div style="padding: 20px;">
+            <div id="weeks-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Race date
+        const RACE_DATE = new Date('2026-06-20T00:00:00'); // June 20, 2026
+        
+        // Calculate weeks to race
+        function updateWeeksToRace() {
+            const today = new Date();
+            const diffTime = RACE_DATE - today;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const weeks = Math.floor(diffDays / 7);
+            const days = diffDays % 7;
+            
+            let display = `${weeks}`;
+            if (days > 0) {
+                display += ` + ${days}d`;
+            }
+            
+            document.getElementById('weeks-to-race').textContent = display;
+        }
+        
+        // Training data - Clean JSON structure
+        const trainingData = {
+            weeks: [
+                {
+                    weekNumber: 1,
+                    dateRange: "Jan 19-25",
+                    focus: "Base Building - Get Moving",
+                    days: [
+                        {
+                            date: "Monday, Jan 19",
+                            type: "brick",
+                            completed: true,
+                            workouts: 2,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 45 },
+                            run: { distance: 4.07, time: 30 },
+                            calories: 843,
+                            avgHR: 136,
+                            maxHR: 154,
+                            splits: {
+                                bike: { avgHR: 132, maxHR: 154 },
+                                run: {
+                                    avgPace: "7:22/km",
+                                    kmSplits: ["7:36", "7:17", "7:13", "7:17", "0:37"],
+                                    kmSplitHR: [134, 138, 140, 142, 145]
+                                }
+                            },
+                            title: "Bike-to-Run Brick",
+                            details: "<strong>Bike:</strong> 45min Z2 (Avg HR: 132, Max: 154)<br><strong>Run:</strong> 30min Z2 - 4.07km (Avg HR: 139, Pace: 7:22/km)",
+                            notes: "Good baseline brick effort. HR stayed in Z2 throughout."
+                        },
+                        {
+                            date: "Tuesday, Jan 20",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Light Technical Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Completed!"
+                        },
+                        {
+                            date: "Wednesday, Jan 21",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 1.1, time: 50 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 401,
+                            avgHR: 143,
+                            maxHR: 173,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:22", "0:31", "0:29", "0:59", "0:28", "0:32", "0:28", "0:28", "0:24", "0:24", "0:26", "0:27", "0:27", "0:29", "0:25", "0:27", "0:31", "0:29", "0:24", "0:28", "0:24", "0:28", "0:25", "0:29", "0:24", "0:29", "0:28", "0:34", "0:27", "0:34", "0:32", "0:27", "0:29", "0:29", "0:27", "0:32", "0:28", "0:33", "0:31", "0:29", "0:22", "0:28", "0:22", "0:23"],
+                                    lapStrokes: [32, 46, 41, 84, 42, 44, 41, 42, 36, 37, 38, 40, 39, 42, 36, null, 44, 43, 34, 40, 36, 41, 36, 42, 36, 42, 40, 52, 39, 51, 46, 41, 41, 42, 38, 48, 40, 47, 44, 43, 35, 41, 36, 37],
+                                    setBreakdown: ["50m", "25m", "25m", "100m", "50m", "50m", "50m", "100m", "50m", "50m", "50m", "100m", "100m", "100m", "100m", "50m", "50m"],
+                                    setTimes: ["0:59", "0:29", "0:59", "2:03", "0:52", "0:55", "0:58", "1:59", "0:56", "0:56", "0:57", "2:08", "2:14", "2:14", "2:13", "0:55", "0:54"]
+                                }
+                            },
+                            title: "Easy Continuous Swimming",
+                            details: "<strong>Total:</strong> 1.1km (1100m) in 50min<br><strong>Max continuous:</strong> 100m<br><strong>Avg HR:</strong> 143, Max: 173",
+                            notes: "Baseline established - focused on technique and breathing rhythm."
+                        },
+                        {
+                            date: "Thursday, Jan 22",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "High Volume Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 90+ minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Completed!"
+                        },
+                        {
+                            date: "Friday, Jan 23",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "FULL REST",
+                            details: "Complete recovery day",
+                            notes: "Rest before weekend volume."
+                        },
+                        {
+                            date: "Saturday, Jan 24",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 30 },
+                            run: { distance: 0, time: 0 },
+                            calories: 352,
+                            avgHR: 135,
+                            maxHR: 186,
+                            title: "Climbing + Finger Rehab + Easy Bike",
+                            details: "<strong>Climbing:</strong> Session completed<br><strong>Finger Rehab:</strong> Post-climbing physio protocol<br><strong>Bike:</strong> 30min Z2 (Avg HR: 135, Max: 186)",
+                            notes: "Combined climbing with short recovery bike session."
+                        },
+                        {
+                            date: "Sunday, Jan 25",
+                            type: "brick",
+                            completed: true,
+                            workouts: 2,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 60 },
+                            run: { distance: 4.18, time: 30 },
+                            calories: 568,
+                            avgHR: 140,
+                            maxHR: 151,
+                            splits: {
+                                bike: { avgHR: 138, maxHR: 151 },
+                                run: {
+                                    avgPace: "7:10/km",
+                                    kmSplits: ["6:55", "6:60", "7:19", "7:15", "1:29"],
+                                    kmSplitHR: [134, 140, 142, 145, 145]
+                                }
+                            },
+                            title: "Bike-to-Run Brick",
+                            details: "<strong>Bike:</strong> 60min Z2 (Avg HR: 138, Max: 151)<br><strong>Run:</strong> 30min Z2 - 4.18km (Avg HR: 141, Pace: 7:10/km)",
+                            notes: "Solid brick with good HR control on both disciplines."
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 2,
+                    dateRange: "Jan 26-Feb 1",
+                    focus: "NYC Trip - Adapt & Maintain",
+                    days: [
+                        {
+                            date: "Monday, Jan 26",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 1.5, time: 53 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 490,
+                            avgHR: 156,
+                            maxHR: 185,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:26", "0:28", "0:28", "0:34", "0:25", "0:26", "0:23", "0:32", "0:25", "0:27", "0:25", "0:24", "0:28", "0:27", "0:24", "0:24", "0:27", "0:26", "0:28", "0:26", "0:24", "0:26", "0:25", "0:24", "0:24", "0:24", "0:28", "0:30", "0:22", "0:23", "0:24", "0:28", "0:29", "0:25", "0:23", "0:26", "0:22", "0:31", "0:20", "0:25", "0:31", "0:27", "0:24", "0:26", "0:29", "0:32", "0:26", "0:25", "0:26", "0:30", "0:23", "0:31", "0:26", "0:27", "0:29", "0:26", "0:24", "0:30", "0:29", "0:29"],
+                                    lapStrokes: [36, 40, 40, 48, 36, 37, 33, 45, 37, 38, 37, 35, 39, 38, 35, 36, 40, 38, 41, 39, 35, 38, 37, 35, 36, 35, 42, 45, 35, 35, 35, null, 42, 37, 35, 39, 31, 45, 29, 35, 44, 40, 35, 38, 42, 47, 40, 36, 41, 49, 36, 43, 38, 40, 42, 39, 35, 45, 42, 42],
+                                    setBreakdown: ["50m", "50m", "50m", "50m", "50m", "100m", "100m", "100m", "150m", "150m", "100m", "200m", "100m", "150m", "100m"],
+                                    setTimes: ["1:01", "1:02", "0:55", "0:55", "0:56", "1:56", "1:52", "1:54", "2:58", "2:55", "1:53", "4:02", "2:02", "3:02", "2:05"]
+                                }
+                            },
+                            title: "Swim Session",
+                            details: "<strong>Total:</strong> 1.5km in 53min<br><strong>Max continuous:</strong> 200m (DOUBLED!)<br><strong>Avg HR:</strong> 156, Max: 185",
+                            notes: "Massive progress - doubled continuous distance!"
+                        },
+                        {
+                            date: "Tuesday, Jan 27",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "REST - Pre-NYC",
+                            details: "Rest before travel",
+                            notes: "Recovery day."
+                        },
+                        {
+                            date: "Wednesday, Jan 28",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Travel to NYC",
+                            details: "No training",
+                            notes: "Travel day."
+                        },
+                        {
+                            date: "Thursday, Jan 29",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "NYC Climbing",
+                            details: "Climbing session in NYC",
+                            notes: "Completed."
+                        },
+                        {
+                            date: "Friday, Jan 30",
+                            type: "run",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 6.18, time: 45 },
+                            calories: 528,
+                            avgHR: 143,
+                            maxHR: 153,
+                            splits: {
+                                run: {
+                                    avgPace: "7:17/km",
+                                    kmSplits: ["7:31", "7:06", "7:17", "7:07", "7:14", "7:11", "1:33"],
+                                    kmSplitHR: [130, 145, 145, 146, 145, 143, 144]
+                                }
+                            },
+                            title: "Hotel Treadmill Run",
+                            details: "<strong>Duration:</strong> 45min Z2<br><strong>Distance:</strong> 6.18km<br><strong>Avg HR:</strong> 143, Max: 153",
+                            notes: "NYC hotel treadmill while recovering from cold."
+                        },
+                        {
+                            date: "Saturday, Jan 31",
+                            type: "run",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 6.51, time: 45 },
+                            calories: 520,
+                            avgHR: 140,
+                            maxHR: 150,
+                            splits: {
+                                run: {
+                                    avgPace: "6:55/km",
+                                    kmSplits: ["6:53", "6:40", "6:46", "6:51", "7:05", "6:60", "3:46"],
+                                    kmSplitHR: [122, 138, 141, 144, 145, 145, 145]
+                                }
+                            },
+                            title: "Hotel Treadmill Run",
+                            details: "<strong>Duration:</strong> 45min Z2<br><strong>Distance:</strong> 6.51km<br><strong>Avg HR:</strong> 140, Max: 150",
+                            notes: "Faster pace, lower HR - feeling better!"
+                        },
+                        {
+                            date: "Sunday, Feb 1",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Return from NYC",
+                            details: "Travel day",
+                            notes: "Back to Montreal."
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 3,
+                    dateRange: "Feb 2-8",
+                    focus: "Swim Breakthrough Week",
+                    days: [
+                        {
+                            date: "Monday, Feb 2",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 1.5, time: 44 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 491,
+                            avgHR: 158,
+                            maxHR: 183,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:23", "0:25", "0:29", "0:26", "0:29", "0:30", "0:29", "0:27", "0:29", "0:28", "0:27", "0:26", "0:23", "0:27", "0:31", "0:32", "0:33", "0:28", "0:27", "0:28", "0:25", "0:28", "0:29", "0:26", "0:30", "0:28", "0:32", "0:35", "0:23", "0:27", "0:29", "0:27", "0:25", "0:34", "0:31", "0:37", "0:32", "0:33", "0:33", "0:32", "0:27", "0:30", "0:25", "0:29", "0:31", "0:32", "0:25", "0:28", "0:27", "0:34", "0:29", "0:28", "0:33", "0:31", "0:31", "0:33", "0:31", "0:31", "0:28", "0:28"],
+                                    lapStrokes: [32, 36, 42, 37, 40, 42, 43, 40, 41, 41, 40, 38, 33, 39, 44, 46, 47, 42, 39, 43, 37, 41, 43, 38, 43, 40, 46, 49, 33, 39, 41, 39, 36, 48, 43, 51, 46, 47, 47, 46, 41, 45, 37, 42, 45, 46, 37, 42, 39, 50, 43, 41, 49, 46, 45, 49, 45, 46, 41, 42],
+                                    setBreakdown: ["50m", "100m", "100m", "250m", "50m", "150m", "200m", "100m", "150m", "350m"],
+                                    setTimes: ["0:58", "2:07", "2:04", "5:20", "0:57", "3:18", "4:28", "2:21", "3:12", "8:02"]
+                                }
+                            },
+                            title: "Swim Session #1",
+                            details: "<strong>Total:</strong> 1.5km in 44min<br><strong>Max continuous:</strong> 350m!<br><strong>Avg HR:</strong> 158, Max: 183",
+                            notes: "HUGE progress - 350m continuous, 75% increase!"
+                        },
+                        {
+                            date: "Tuesday, Feb 3",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Physio protocol",
+                            notes: "First climbing back after NYC."
+                        },
+                        {
+                            date: "Wednesday, Feb 4",
+                            type: "bike",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 60 },
+                            run: { distance: 0, time: 0 },
+                            calories: 639,
+                            avgHR: 138,
+                            maxHR: 153,
+                            splits: {
+                                bike: { avgHR: 138, maxHR: 153 }
+                            },
+                            title: "Z2 Indoor Bike",
+                            details: "<strong>Duration:</strong> 60min<br><strong>Avg HR:</strong> 138 bpm (perfect Z2!)<br><strong>Target:</strong> 135-145 bpm",
+                            notes: "Excellent HR control throughout."
+                        },
+                        {
+                            date: "Thursday, Feb 5",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 1.5, time: 45 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 464,
+                            avgHR: 161,
+                            maxHR: 180,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:23", "0:25", "0:27", "0:25", "0:22", "0:24", "0:22", "0:23", "0:20", "0:25", "0:27", "0:29", "0:22", "0:24", "0:23", "0:26", "0:20", "0:21", "0:23", "0:28", "0:27", "0:29", "0:20", "0:24", "0:26", "0:27", "0:21", "0:26", "0:25", "0:30", "0:20", "0:25", "0:26", "0:27", "0:27", "0:31", "0:26", "0:29", "0:31", "0:27", "0:29", "0:30", "0:27", "0:28", "0:27", "0:25", "0:25", "0:26", "0:30", "0:29", "0:28", "0:30", "0:29", "0:28", "0:30", "0:30", "0:30", "0:29", "0:31", "0:30"],
+                                    lapStrokes: [34, 37, 41, 38, 34, 35, 34, 37, 30, 38, 40, 44, 32, 36, 35, 39, 32, 32, 35, 43, 40, 45, 31, 37, 39, 42, 33, 38, 38, 45, 32, 39, 39, 43, 40, 46, 41, 43, 45, 39, 43, 45, 40, 42, 40, 40, 37, 39, 45, 44, 43, 45, 44, 42, 45, 46, 45, 43, 46, 45],
+                                    setBreakdown: ["100m", "100m", "100m", "50m", "50m", "150m", "100m", "100m", "150m", "150m", "450m"],
+                                    setTimes: ["2:01", "1:47", "1:55", "0:49", "0:54", "2:53", "1:50", "1:54", "3:01", "3:15", "9:52"]
+                                }
+                            },
+                            title: "Swim Session #2",
+                            details: "<strong>Total:</strong> 1.5km in 45min<br><strong>Max continuous:</strong> 450m (NEW RECORD!)<br><strong>Avg HR:</strong> 161, Max: 180",
+                            notes: "Incredible - 450m continuous! 30% of race distance!"
+                        },
+                        {
+                            date: "Friday, Feb 6",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Physio protocol",
+                            notes: "Completed!"
+                        },
+                        {
+                            date: "Saturday, Feb 7",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "FULL REST",
+                            details: "Complete recovery",
+                            notes: "Completed!"
+                        },
+                        {
+                            date: "Sunday, Feb 8",
+                            type: "bike",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 66 },
+                            run: { distance: 0, time: 0 },
+                            calories: 767,
+                            avgHR: 137,
+                            maxHR: 148,
+                            splits: {
+                                bike: { avgHR: 137, maxHR: 148 }
+                            },
+                            title: "Z2 Bike + Climbing",
+                            details: "<strong>Bike:</strong> 66min Z2 indoor (Avg HR: 137 bpm)<br><strong>Climbing:</strong> Session completed<br><strong>Calories:</strong> 767",
+                            notes: "Perfect Z2 bike session (137 bpm avg). Climbing after."
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 4,
+                    dateRange: "Feb 9-15",
+                    focus: "Pre-Trip Quality Week",
+                    days: [
+                        {
+                            date: "Monday, Feb 9",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 1.5, time: 49 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 578,
+                            avgHR: 159,
+                            maxHR: 174,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:23", "0:29", "0:23", "0:24", "0:22", "0:22", "0:24", "0:23", "0:23", "0:22", "0:24", "0:23", "0:25", "0:30", "0:25", "0:28", "0:28", "0:21", "0:27", "0:33", "0:26", "0:26", "0:23", "0:26", "0:24", "0:23", "0:24", "0:28", "0:27", "0:28", "0:27", "0:25", "0:28", "0:29", "0:26", "0:26", "0:28", "0:33", "0:31", "0:29", "0:30", "0:27", "0:35", "0:31", "0:26", "0:26", "0:31", "0:31", "0:26", "0:26", "0:30", "0:28", "0:27", "0:24", "0:31", "0:29", "0:30", "0:26", "0:30", "0:31"],
+                                    lapStrokes: [35, 42, 33, 35, 34, 32, 35, 34, 34, 32, 37, 33, 36, 44, 36, 41, 39, 31, 38, 46, 36, 37, 34, 37, 34, 36, 35, 41, 38, 40, 38, 38, 39, 41, 38, 37, 39, 47, 44, 42, 45, 39, 49, 46, 36, 37, 44, 44, 38, 37, 42, 40, 39, 35, 45, 41, 43, 37, 44, 45],
+                                    setBreakdown: ["100m", "150m", "1250m CONTINUOUS"],
+                                    setTimes: ["2:07", "3:37", "27:16"],
+                                    setAvgHR: [102, null, 165]
+                                }
+                            },
+                            title: "Swim Session #1",
+                            details: "<strong>Total:</strong> 1.5km in 49min<br><strong>Max continuous:</strong> 1,250m (83% of race distance!)<br><strong>Avg HR:</strong> 159, Max: 174",
+                            notes: "MASSIVE BREAKTHROUGH! After warmup, swam 1,250m continuous - over 4/5 of the race distance!"
+                        },
+                        {
+                            date: "Tuesday, Feb 10",
+                            type: "run",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 4.08, time: 30 },
+                            calories: 337,
+                            avgHR: 142,
+                            maxHR: 149,
+                            splits: {
+                                run: {
+                                    avgPace: "7:21/km",
+                                    kmSplits: ["6:55", "7:01", "7:46", "7:39", "0:38"],
+                                    kmSplitHR: [131, 144, 145, 146, 145]
+                                }
+                            },
+                            title: "Treadmill Run",
+                            details: "<strong>Duration:</strong> 30min<br><strong>Distance:</strong> 4.08km (Avg pace: 7:21/km)<br><strong>Avg HR:</strong> 142, Max: 149",
+                            notes: "Good treadmill run. HR stayed controlled in Z2 range."
+                        },
+                        {
+                            date: "Wednesday, Feb 11",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 2.0, time: 45 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 583,
+                            avgHR: 152,
+                            maxHR: 163,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:25", "0:24", "0:27", "0:26", "0:30", "0:28", "0:28", "0:28", "0:30", "0:29", "0:29", "0:29", "0:23", "0:33", "0:34", "0:27", "0:29", "0:27", "0:32", "0:29", "0:27", "0:31", "0:27", "0:32", "0:29", "0:28", "0:27", "0:28", "0:29", "0:27", "0:28", "0:24", "0:29", "0:29", "0:28", "0:28", "0:28", "0:33", "0:24", "0:24", "0:30", "0:28", "0:27", "0:28", "0:26", "0:24", "0:26", "0:27", "0:33", "0:27", "0:26", "0:36", "0:28", "0:33", "0:28", "0:32", "0:26", "0:29", "0:32", "0:27", "0:29", "0:33", "0:31", "0:31", "0:27", "0:31", "0:24", "0:33", "0:32", "0:27", "0:33", "0:31", "0:26", "0:31", "0:28", "0:31", "0:31", "0:32", "0:25", "0:25"],
+                                    lapStrokes: [35, 36, 38, 37, 42, 39, 39, 41, 42, 41, 40, 41, 34, 49, 48, 39, 43, 39, 45, 42, 38, 45, 38, 45, 41, 40, 40, 40, 42, 39, 41, 34, 41, 42, 40, 40, 40, 47, 34, 33, 43, 39, 38, 40, 37, 36, 37, 40, 47, 39, 37, 52, 41, 47, 39, 45, 38, 41, 46, 39, 42, 47, 44, 44, 39, 44, 36, 47, 45, 38, 46, 45, 37, 44, 40, 44, 44, 45, 37, 38],
+                                    setBreakdown: ["2000m CONTINUOUS (watch counted 10sec break)"],
+                                    setTimes: ["44:08"],
+                                    setAvgHR: [152]
+                                }
+                            },
+                            title: "Swim Session - After Climbing!",
+                            details: "<strong>Total:</strong> 2.0km in 45min<br><strong>FULL 2000m CONTINUOUS</strong> (133% of race distance!)<br><strong>After climbing session</strong><br><strong>Avg HR:</strong> 152, Max: 163",
+                            notes: "🔥 ABSOLUTELY INCREDIBLE! You swam 2km (133% of race distance) WITHOUT STOPPING after climbing! Watch counted a 10-second break but you went straight through. You're more than race-ready on swimming endurance!"
+                        },
+                        {
+                            date: "Thursday, Feb 12",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "REST DAY",
+                            details: "Complete recovery",
+                            notes: "Rest before El Salvador trip."
+                        },
+                        {
+                            date: "Friday, Feb 13",
+                            type: "brick",
+                            completed: true,
+                            workouts: 2,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 60 },
+                            run: { distance: 4.28, time: 30 },
+                            calories: 1062,
+                            avgHR: 141,
+                            maxHR: 150,
+                            splits: {
+                                bike: { avgHR: 137, maxHR: 150 },
+                                run: {
+                                    avgPace: "7:00/km",
+                                    kmSplits: ["6:42", "6:54", "7:11", "7:03", "2:09"],
+                                    kmSplitHR: [141, 145, 145, 148, 150]
+                                }
+                            },
+                            title: "Brick Workout + Climbing",
+                            details: "<strong>Bike:</strong> 60min Z2 (Avg HR: 137, Max: 150)<br><strong>Run:</strong> 30min - 4.28km (Avg HR: 145, Pace: 7:00/km)<br><strong>Climbing:</strong> Session completed<br><strong>Total:</strong> 1,062 cal",
+                            notes: "Great brick before El Salvador! Perfect Z2 on bike, solid run pace at 7:00/km. Plus climbing session."
+                        },
+                        {
+                            date: "Saturday, Feb 14",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Travel to El Salvador ✈️",
+                            details: "Morning departure",
+                            notes: "Rest, hydrate, enjoy!"
+                        },
+                        {
+                            date: "Sunday, Feb 15",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "El Salvador - Rest 🏖️",
+                            details: "Optional: light ocean swim, beach walk",
+                            notes: "No structured training. Vacation mode!"
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 5,
+                    dateRange: "Feb 16-22",
+                    focus: "El Salvador Recovery Week 🏖️",
+                    days: [
+                        {
+                            date: "Monday, Feb 16",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "El Salvador - Optional Activity",
+                            details: "Light beach walk, gentle ocean swim, or complete rest",
+                            notes: "Recovery week - completed!"
+                        },
+                        {
+                            date: "Tuesday, Feb 17",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "El Salvador - Optional Activity",
+                            details: "Light beach walk, gentle ocean swim, or complete rest",
+                            notes: "Recovery week - completed!"
+                        },
+                        {
+                            date: "Wednesday, Feb 18",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "El Salvador - Optional Activity",
+                            details: "Light beach walk, gentle ocean swim, or complete rest",
+                            notes: "Recovery week - completed!"
+                        },
+                        {
+                            date: "Thursday, Feb 19",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "El Salvador - Optional Activity",
+                            details: "Light beach walk, gentle ocean swim, or complete rest",
+                            notes: "Recovery week - completed!"
+                        },
+                        {
+                            date: "Friday, Feb 20",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "El Salvador - Optional Activity",
+                            details: "Light beach walk, gentle ocean swim, or complete rest",
+                            notes: "Recovery week - completed!"
+                        },
+                        {
+                            date: "Saturday, Feb 21",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Travel Day",
+                            details: "Return travel from El Salvador",
+                            notes: "Travel completed!"
+                        },
+                        {
+                            date: "Sunday, Feb 22",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Travel/Recovery",
+                            details: "Arrival day - complete rest",
+                            notes: "Completed - rested and recovered!"
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 6,
+                    dateRange: "Feb 23-Mar 1",
+                    focus: "Return to Training - Build Back",
+                    days: [
+                        {
+                            date: "Monday, Feb 23",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Miami - Rest Day",
+                            details: "Complete rest in Miami",
+                            notes: "Rested in Miami before returning to training."
+                        },
+                        {
+                            date: "Tuesday, Feb 24",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes (moderate intensity)<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "First climbing back after 2-week break."
+                        },
+                        {
+                            date: "Wednesday, Feb 25",
+                            type: "swim",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 1.5, time: 34 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 429,
+                            avgHR: 146,
+                            maxHR: 157,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    lapTimes: ["0:20", "0:31", "0:31", "0:29", "0:32", "0:27", "0:32", "0:29", "0:29", "0:29", "0:35", "0:31", "0:29", "0:32", "0:29", "0:30", "0:35", "0:30", "0:27", "0:30", "0:27", "0:30", "0:27", "0:31", "0:33", "0:33", "0:27", "0:34", "0:27", "0:33", "0:29", "0:32", "0:29", "0:29", "0:29", "0:34", "0:28", "0:32", "0:28", "0:30", "0:27", "0:32", "0:25", "0:28", "0:27", "0:31", "0:24", "0:32", "0:26", "0:31", "0:27", "0:29", "0:26", "0:32", "0:28", "0:29", "0:25", "0:28", "0:24", "0:27"],
+                                    lapStrokes: [28, 44, 45, 41, 46, 38, 45, 41, 42, 41, 48, 43, 41, 44, 40, 42, 48, 42, 38, 43, 38, 42, 38, 44, 46, 47, 37, 48, 38, 45, 40, 44, 40, 41, 41, 47, 39, 44, 39, 42, 39, 46, 37, 40, 38, 44, 34, 46, 38, 44, 39, 42, 37, 46, 43, 43, 37, 42, 36, 40],
+                                    setBreakdown: ["950m", "100m", "450m"],
+                                    setTimes: ["21:15", "2:04", "9:19"],
+                                    setAvgHR: [155, null, null]
+                                }
+                            },
+                            title: "Swim Session - Back in Pool",
+                            details: "<strong>Total:</strong> 1.5km in 34min<br><strong>Sets:</strong> 950m continuous, 100m, 450m<br><strong>Avg HR:</strong> 146, Max: 157",
+                            notes: "Strong return to pool after El Salvador. 950m continuous to start."
+                        },
+                        {
+                            date: "Thursday, Feb 26",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> Session completed",
+                            notes: "Climbing instead of planned bike session."
+                        },
+                        {
+                            date: "Friday, Feb 27",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Rest Day",
+                            details: "Complete rest",
+                            notes: "Rest day."
+                        },
+                        {
+                            date: "Saturday, Feb 28",
+                            type: "rest",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Touring Day",
+                            details: "Active touring / sightseeing",
+                            notes: "Touring day - no structured training."
+                        },
+                        {
+                            date: "Sunday, Mar 1",
+                            type: "brick",
+                            completed: true,
+                            workouts: 3,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 75 },
+                            run: { distance: 4.10, time: 30 },
+                            calories: 1159,
+                            avgHR: 142,
+                            maxHR: 149,
+                            splits: {
+                                bike: { avgHR: 138, maxHR: null },
+                                run: {
+                                    avgPace: "7:19/km",
+                                    kmSplits: ["6:59", "7:11", "7:24", "7:32", "0:50"],
+                                    kmSplitHR: [142, 144, 149, 149, 147]
+                                }
+                            },
+                            title: "Climbing + Bike-to-Run Brick",
+                            details: "<strong>Climbing:</strong> Morning session<br><strong>Bike:</strong> 75min Z2 (Avg HR: 138 bpm, 802 cal)<br><strong>Run:</strong> 30min — 4.10km (Avg HR: 146, Pace: 7:19/km)",
+                            notes: "Triple session day — climbing in the morning, brick in the afternoon. Solid Z2 bike at 138 avg. Run pace consistent with previous bricks."
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 7,
+                    dateRange: "Mar 2-8",
+                    focus: "Bike Rebuild + Run Extension",
+                    days: [
+                        {
+                            date: "Monday, Mar 2",
+                            type: "bike",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 60 },
+                            run: { distance: 0, time: 0 },
+                            calories: 707,
+                            avgHR: 139,
+                            maxHR: 166,
+                            splits: {
+                                bike: { avgHR: 139, maxHR: 166 }
+                            },
+                            title: "Z2 Indoor Bike",
+                            details: "<strong>Bike:</strong> 60min Z2 (Avg HR: 139 bpm, 707 cal)<br><strong>Note:</strong> Max HR 166 is a watch glitch at session start — Z2 the entire ride",
+                            notes: "Felt hard — saddle soreness from yesterday's brick. Z2 the whole way despite the glitched HR spike at the start."
+                        },
+                        {
+                            date: "Tuesday, Mar 3",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Recovery day between bike and run/swim double."
+                        },
+                        {
+                            date: "Wednesday, Mar 4",
+                            type: "run",
+                            completed: true,
+                            workouts: 2,
+                            swim: { distance: 1.9, time: 39 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 5.0, time: 24 },
+                            calories: 829,
+                            avgHR: 167,
+                            maxHR: 171,
+                            splits: {
+                                run: {
+                                    avgPace: "4:47/km",
+                                    kmSplits: ["5:16", "4:41", "5:33", "4:50", "4:47"],
+                                    kmSplitHR: [null, null, 169, 171, 161]
+                                },
+                                swim: {
+                                    lapLength: "25m",
+                                    setBreakdown: ["1175m", "325m", "150m"],
+                                    setTimes: ["25:01", "6:22", "2:46"]
+                                }
+                            },
+                            title: "Run 5km + Swim 1650m",
+                            details: "<strong>Run:</strong> 24min — 5km (Avg HR: 167, Pace: 4:47/km)<br><strong>Swim:</strong> ~1,900m in ~39min (Avg HR: 151, Pace: 2:09/100m)<br><strong>Sets:</strong> 1,175m / 325m / 150m + 250m untracked",
+                            notes: "⚠️ Run was Z4/Z5 — avg HR 167 at 4:47/km, not Z2. Swim solid: 1,175m continuous to start. 250m extra untracked laps added post-session."
+                        },
+                        {
+                            date: "Thursday, Mar 5",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Completed."
+                        },
+                        {
+                            date: "Friday, Mar 6",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Rest Day",
+                            details: "Unplanned rest — body too fatigued",
+                            notes: "Too wrecked after run+swim double on Wed and climbing Thu. Needed the rest."
+                        },
+                        {
+                            date: "Saturday, Mar 7",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Camping 🏕️",
+                            details: "No structured training",
+                            notes: "Camping weekend."
+                        },
+                        {
+                            date: "Sunday, Mar 8",
+                            type: "rest",
+                            completed: true,
+                            workouts: 0,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Camping 🏕️",
+                            details: "Weekend camping trip",
+                            notes: "Camping — no structured training. Brick rolled to week 8."
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 8,
+                    dateRange: "Mar 9-15",
+                    focus: "Peak Load Week — Bike Dominance",
+                    days: [
+                        {
+                            date: "Monday, Mar 9",
+                            type: "climbing",
+                            completed: true,
+                            workouts: 1,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> Session completed<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Completed."
+                        },
+                        {
+                            date: "Tuesday, Mar 10",
+                            type: "run",
+                            completed: true,
+                            workouts: 2,
+                            swim: { distance: 1.5, time: 30 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 5.48, time: 35 },
+                            calories: 812,
+                            avgHR: 134,
+                            maxHR: 159,
+                            splits: {
+                                run: {
+                                    avgPace: "6:22/km",
+                                    kmSplits: ["6:01", "6:06", "6:15", "6:21", "6:23"],
+                                    kmSplitHR: [130, 135, null, null, null]
+                                },
+                                swim: {
+                                    lapLength: "25m",
+                                    setBreakdown: ["725m", "25m", "50m", "700m"],
+                                    setTimes: ["14:17", "0:21", "0:54", "13:57"]
+                                }
+                            },
+                            title: "Z2 Run 5.48km + Swim 1500m",
+                            details: "<strong>Run:</strong> 35min Z2 — 5.48km (Avg HR: 134, Pace: 6:22/km)<br><strong>Swim:</strong> 1500m in 30min (Avg HR: 159, Pace: 2:00/100m)<br><strong>Sets:</strong> 725m / 25m / 50m / 700m",
+                            notes: "Solid double — proper Z2 run finally, then strong swim. 725m + 700m continuous sets at 2:00/100m pace."
+                        },
+                        {
+                            date: "Wednesday, Mar 11",
+                            type: "bike",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 60 },
+                            run: { distance: 0, time: 0 },
+                            calories: 612,
+                            avgHR: 137,
+                            maxHR: 151,
+                            workouts: 1,
+                            splits: {
+                                bike: { avgHR: 137, maxHR: 151 }
+                            },
+                            title: "Z2 Indoor Bike — 60min",
+                            details: "<strong>Bike:</strong> 60min Z2 (Avg HR: 137, Max: 151, 612 cal)",
+                            notes: "Solid Z2 — 137 avg HR, consistent throughout."
+                        },
+                        {
+                            date: "Thursday, Mar 12",
+                            type: "climbing",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 1,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Climbing only today."
+                        },
+                        {
+                            date: "Friday, Mar 13",
+                            type: "rest",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 0,
+                            title: "Rest Day",
+                            details: "Complete rest",
+                            notes: "Unplanned rest day."
+                        },
+                        {
+                            date: "Saturday, Mar 14",
+                            type: "climbing",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 1,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Keep it moderate — big brick tomorrow."
+                        },
+                        {
+                            date: "Sunday, Mar 15",
+                            type: "brick",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 71 },
+                            run: { distance: 6.75, time: 46 },
+                            calories: 1279,
+                            avgHR: 136,
+                            maxHR: 151,
+                            workouts: 2,
+                            splits: {
+                                bike: { avgHR: 136, maxHR: 151 },
+                                run: {
+                                    avgPace: "6:50/km",
+                                    kmSplits: ["6:52", "6:43", "6:27", "6:48", "7:04"],
+                                    kmSplitHR: [132, 142, 146, 145, 146]
+                                }
+                            },
+                            title: "Brick — 71min Bike + 6.75km Run",
+                            details: "<strong>Bike:</strong> 71min Z2 (Avg HR: 136, 734 cal)<br><strong>Run:</strong> 46min — 6.75km (Avg HR: 143, Pace: 6:50/km)",
+                            notes: "Longest run to date — 6.75km off the bike. HR drifted to Z3 on the run (143 avg) which is expected post-bike. Consistent splits, good effort."
+                        }
+                    ]
+                },
+                {
+                    weekNumber: 9,
+                    dateRange: "Mar 16-22",
+                    focus: "Bike Volume + First Long Standalone Run",
+                    days: [
+                        {
+                            date: "Monday, Mar 16",
+                            type: "rest",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 0,
+                            title: "Rest Day",
+                            details: "Complete rest",
+                            notes: "Recovery day."
+                        },
+                        {
+                            date: "Tuesday, Mar 17",
+                            type: "climbing",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 1,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Keep intensity moderate — big week ahead."
+                        },
+                        {
+                            date: "Wednesday, Mar 18",
+                            type: "swim",
+                            completed: true,
+                            swim: { distance: 1.1, time: 26 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 298,
+                            avgHR: 141,
+                            workouts: 1,
+                            splits: {
+                                swim: {
+                                    lapLength: "25m",
+                                    setBreakdown: ["250m", "300m", "250m", "50m", "150m"],
+                                    setTimes: ["5:10", "6:06", "5:03", "0:57", "2:36"]
+                                }
+                            },
+                            title: "Swim — 1100m (Lunch)",
+                            details: "<strong>Swim:</strong> 1100m in 26min (Avg HR: 141, Pace: 2:24/100m)<br><strong>Sets:</strong> 250m / 300m / 250m / 50m / 150m",
+                            notes: "Shorter lunch swim — 1100m. Pace 2:24/100m, solid effort."
+                        },
+                        {
+                            date: "Thursday, Mar 19",
+                            type: "rest",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 0,
+                            title: "Rest Day",
+                            details: "Complete rest",
+                            notes: "Rest day."
+                        },
+                        {
+                            date: "Friday, Mar 20",
+                            type: "rest",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 0,
+                            title: "Rest Day",
+                            details: "Complete rest",
+                            notes: "Recovery before climbing and big brick weekend."
+                        },
+                        {
+                            date: "Saturday, Mar 21",
+                            type: "bike",
+                            completed: true,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 60 },
+                            run: { distance: 0, time: 0 },
+                            calories: 606,
+                            avgHR: 135,
+                            maxHR: 151,
+                            workouts: 1,
+                            splits: {
+                                bike: { avgHR: 135, maxHR: 151 }
+                            },
+                            title: "Z2 Indoor Bike — 60min",
+                            details: "<strong>Bike:</strong> 60min Z2 (Avg HR: 135, Max: 151, 606 cal)",
+                            notes: "Felt wrecked — skipped the run, right call. Excellent Z2 HR control."
+                        },
+                        {
+                            date: "Sunday, Mar 22",
+                            type: "climbing",
+                            completed: false,
+                            swim: { distance: 0, time: 0 },
+                            bike: { distance: 0, time: 0 },
+                            run: { distance: 0, time: 0 },
+                            calories: 0,
+                            workouts: 1,
+                            title: "Climbing + Finger Rehab",
+                            details: "<strong>Climbing:</strong> 60-75 minutes<br><strong>Finger Rehab:</strong> Post-climbing physio protocol",
+                            notes: "Recovery climbing after Saturday brick."
+                        }
+                    ]
+                }
+            ]
+        };
+        
+        // Calculate metrics for a week
+        function calculateWeekMetrics(week) {
+            let swimDist = 0, swimTime = 0;
+            let bikeDist = 0, bikeTime = 0;
+            let runDist = 0, runTime = 0;
+            let calories = 0;
+            let workoutCount = 0;
+            
+            week.days.forEach(day => {
+                if (!day.completed) return;
+                swimDist += day.swim?.distance || 0;
+                swimTime += day.swim?.time || 0;
+                bikeDist += day.bike?.distance || 0;
+                bikeTime += day.bike?.time || 0;
+                runDist += day.run?.distance || 0;
+                runTime += day.run?.time || 0;
+                calories += day.calories || 0;
+
+                // Count each distinct activity individually
+                workoutCount += day.workouts || 0;
+            });
+            
+            return {
+                swim: { dist: swimDist.toFixed(1), time: swimTime },
+                bike: { dist: bikeDist.toFixed(1), time: bikeTime },
+                run: { dist: runDist.toFixed(1), time: runTime },
+                total: swimTime + bikeTime + runTime,
+                calories,
+                workoutCount
+            };
+        }
+        
+        // Calculate overall metrics
+        function calculateOverallMetrics() {
+            let swimDist = 0, swimTime = 0;
+            let bikeDist = 0, bikeTime = 0;
+            let runDist = 0, runTime = 0;
+            let calories = 0;
+            
+            trainingData.weeks.forEach(week => {
+                week.days.forEach(day => {
+                    if (!day.completed) return;
+                    swimDist += day.swim?.distance || 0;
+                    swimTime += day.swim?.time || 0;
+                    bikeDist += day.bike?.distance || 0;
+                    bikeTime += day.bike?.time || 0;
+                    runDist += day.run?.distance || 0;
+                    runTime += day.run?.time || 0;
+                    calories += day.calories || 0;
+                });
+            });
+            
+            const totalTime = swimTime + bikeTime + runTime;
+            const hours = Math.floor(totalTime / 60);
+            const mins = totalTime % 60;
+            
+            return {
+                swim: { dist: swimDist.toFixed(1), time: swimTime },
+                bike: { dist: bikeDist.toFixed(1), time: bikeTime },
+                run: { dist: runDist.toFixed(1), time: runTime },
+                total: totalTime,
+                totalFormatted: `${hours}h ${mins}min`,
+                calories
+            };
+        }
+        
+        // Render overall summary
+        function renderOverallSummary() {
+            const m = calculateOverallMetrics();
+            document.getElementById('overall-metrics-container').innerHTML = `
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-discipline">🏊 SWIM</div>
+                        <div class="summary-distance">${m.swim.dist} km</div>
+                        <div class="summary-time">${m.swim.time} min</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-discipline">🚴 BIKE</div>
+                        <div class="summary-distance">${m.bike.dist} km</div>
+                        <div class="summary-time">${m.bike.time} min</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-discipline">🏃 RUN</div>
+                        <div class="summary-distance">${m.run.dist} km</div>
+                        <div class="summary-time">${m.run.time} min</div>
+                    </div>
+                </div>
+                <div class="summary-totals">
+                    <div><strong>Total Time:</strong> ${m.total} min (${m.totalFormatted})</div>
+                    <div>🔥 <strong>Total Calories:</strong> ${m.calories.toLocaleString()} cal</div>
+                </div>
+            `;
+        }
+        
+        // Generate splits HTML
+        function generateSplitsHTML(day, dayId) {
+            if (!day.completed || !day.splits) return '';
+            
+            let html = `<div class="splits-toggle" onclick="toggleSplits('${dayId}')">📊 View Splits ▼</div>`;
+            html += `<div id="${dayId}-splits" class="splits-content"><div style="margin-top: 15px; padding: 12px; background: #f7fafc; border-radius: 6px;">`;
+            
+            // Swim splits
+            if (day.splits.swim) {
+                const s = day.splits.swim;
+                if (s.setBreakdown) {
+                    html += '<table class="splits-table"><thead><tr><th>Set</th><th>Distance</th><th>Time</th></tr></thead><tbody>';
+                    s.setBreakdown.forEach((set, i) => {
+                        html += `<tr><td class="split-number">#${i+1}</td><td>${set}</td><td class="split-time">${s.setTimes[i]}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                }
+                if (s.lapTimes) {
+                    html += `<div style="margin-top: 12px; font-size: 0.85em; color: #718096;">Lap Times (${s.lapLength}):</div><div class="swim-splits-grid">`;
+                    s.lapTimes.forEach((time, i) => {
+                        const strokes = s.lapStrokes?.[i] ? ` (${s.lapStrokes[i]})` : '';
+                        html += `<div class="lap-time">${time}${strokes}</div>`;
+                    });
+                    html += '</div>';
+                }
+            }
+            
+            // Run splits
+            if (day.splits.run) {
+                const r = day.splits.run;
+                html += '<table class="splits-table"><thead><tr><th>Km</th><th>Split</th><th>HR</th></tr></thead><tbody>';
+                r.kmSplits.forEach((split, i) => {
+                    html += `<tr><td class="split-number">${i+1}km</td><td class="split-time">${split}</td><td class="split-hr">${r.kmSplitHR[i]}</td></tr>`;
+                });
+                html += `</tbody></table><div style="margin-top: 8px; font-size: 0.9em; color: #4a5568;"><strong>Avg Pace:</strong> ${r.avgPace}</div>`;
+            }
+            
+            // Bike splits
+            if (day.splits.bike) {
+                const b = day.splits.bike;
+                html += `<div style="font-size: 0.9em; color: #4a5568;"><strong>Avg HR:</strong> ${b.avgHR} &nbsp; <strong>Max HR:</strong> ${b.maxHR}</div>`;
+            }
+            
+            html += '</div></div>';
+            return html;
+        }
+        
+        // Toggle splits
+        function toggleSplits(dayId) {
+            document.getElementById(`${dayId}-splits`).classList.toggle('expanded');
+        }
+        
+        // Toggle week
+        function toggleWeek(weekNum) {
+            const content = document.getElementById(`week-content-${weekNum}`);
+            const icon = document.getElementById(`week-icon-${weekNum}`);
+            content.classList.toggle('collapsed');
+            icon.classList.toggle('collapsed');
+        }
+        
+        // Jump to today's workout  
+        function jumpToToday() {
+            // Always use EST (UTC-5)
+            const today = new Date();
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            const dayName = days[today.getDay()];
+            const month = months[today.getMonth()];
+            const date = today.getDate();
+            const todayStr = `${dayName}, ${month} ${date}`;
+            
+            // Find the day card with matching data-date
+            const targetDay = document.querySelector(`.day[data-date="${todayStr}"]`);
+            
+            if (targetDay) {
+                // Find and expand the week if collapsed
+                const weekContent = targetDay.closest('.week-content');
+                if (weekContent && weekContent.classList.contains('collapsed')) {
+                    const weekNum = weekContent.id.match(/week-content-(\d+)/)[1];
+                    toggleWeek(parseInt(weekNum));
+                }
+                
+                // Scroll to the day
+                setTimeout(() => {
+                    targetDay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Highlight briefly
+                    targetDay.style.boxShadow = '0 0 20px rgba(72, 187, 120, 0.5)';
+                    setTimeout(() => {
+                        targetDay.style.boxShadow = '';
+                    }, 2000);
+                }, 300);
+            } else {
+                alert(`Today's workout (${todayStr}) not found in the plan!`);
+            }
+        }
+        
+        // Render weeks
+        function renderWeeks() {
+            const container = document.getElementById('weeks-container');
+            let currentWeekIndex = trainingData.weeks.findIndex(w => w.days.some(d => !d.completed));
+            if (currentWeekIndex === -1) currentWeekIndex = trainingData.weeks.length - 1;
+            
+            trainingData.weeks.forEach((week, idx) => {
+                const isComplete = week.days.every(d => d.completed);
+                const isCurrent = idx === currentWeekIndex;
+                const shouldCollapse = idx < currentWeekIndex;
+                const metrics = calculateWeekMetrics(week);
+                
+                let weekHTML = `
+                    <div class="week-section">
+                        <div class="week-header ${isComplete ? 'completed' : ''}" onclick="toggleWeek(${week.weekNumber})">
+                            <span>Week ${week.weekNumber} (${week.dateRange})${isCurrent ? ' 📌 CURRENT' : ''}${isComplete ? ' ✅ COMPLETE' : ''}</span>
+                            <div style="display: flex; align-items: center; gap: 20px;">
+                                <span style="font-size: 0.8em; font-weight: normal;">${week.focus}</span>
+                                <span id="week-icon-${week.weekNumber}" class="collapse-icon ${shouldCollapse ? 'collapsed' : ''}">▼</span>
+                            </div>
+                        </div>
+                        <div id="week-content-${week.weekNumber}" class="week-content ${shouldCollapse ? 'collapsed' : ''}">
+                            <div class="week-metrics-compact ${isComplete ? 'completed-bg' : ''}">
+                                <div class="compact-metric">
+                                    <span>🏊</span>
+                                    <span class="compact-metric-value compact-swim">${metrics.swim.dist}km</span>
+                                    <span style="color: #718096;">${metrics.swim.time}min</span>
+                                </div>
+                                <div class="compact-metric">
+                                    <span>🚴</span>
+                                    <span class="compact-metric-value compact-bike">${metrics.bike.dist}km</span>
+                                    <span style="color: #718096;">${metrics.bike.time}min</span>
+                                </div>
+                                <div class="compact-metric">
+                                    <span>🏃</span>
+                                    <span class="compact-metric-value compact-run">${metrics.run.dist}km</span>
+                                    <span style="color: #718096;">${metrics.run.time}min</span>
+                                </div>
+                                <div class="compact-metric compact-total">
+                                    <span>⏱️</span>
+                                    <span class="compact-metric-value">${metrics.total}min</span>
+                                    ${metrics.calories > 0 ? `<span style="color: #718096;">| 🔥 ${metrics.calories}cal</span>` : ''}
+                                    <span style="color: #718096;">| 💪 ${metrics.workoutCount} workouts</span>
+                                </div>
+                            </div>
+                            <div class="week-metrics ${isComplete ? 'completed-bg' : ''}">
+                                <div class="metrics-grid">
+                                    <div class="metric-card">
+                                        <div class="metric-label">🏊 SWIM</div>
+                                        <div class="metric-value swim">${metrics.swim.dist} km</div>
+                                        <div class="metric-subvalue">${metrics.swim.time} min</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-label">🚴 BIKE</div>
+                                        <div class="metric-value bike">${metrics.bike.dist} km</div>
+                                        <div class="metric-subvalue">${metrics.bike.time} min</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-label">🏃 RUN</div>
+                                        <div class="metric-value run">${metrics.run.dist} km</div>
+                                        <div class="metric-subvalue">${metrics.run.time} min</div>
+                                    </div>
+                                </div>
+                                <div class="metrics-total">
+                                    <strong>Total:</strong> ${metrics.total} min &nbsp;|&nbsp; 💪 <strong>${metrics.workoutCount} workouts</strong>${metrics.calories > 0 ? ` &nbsp;|&nbsp; 🔥 <strong>${metrics.calories} cal</strong>` : ''}
+                                </div>
+                            </div>
+                `;
+                
+                week.days.forEach((day, dayIdx) => {
+                    const dayId = `w${week.weekNumber}d${dayIdx}`;
+                    const splitsHTML = generateSplitsHTML(day, dayId);
+                    
+                    weekHTML += `
+                        <div class="day ${day.completed ? 'completed' : ''}" data-date="${day.date}">
+                            <div class="day-header">
+                                <span class="day-name">${day.date}${day.completed ? ' ✅' : ''}</span>
+                                <span class="day-type ${day.type}">${day.type}</span>
+                            </div>
+                            <div class="session-title">${day.title}</div>
+                            <div class="session-details">${day.details}</div>
+                            ${day.notes ? `<div class="notes">${day.notes}</div>` : ''}
+                            ${splitsHTML}
+                        </div>
+                    `;
+                });
+                
+                weekHTML += '</div></div>';
+                container.innerHTML += weekHTML;
+            });
+        }
+        
+        // Initialize
+        updateWeeksToRace();
+        renderOverallSummary();
+        renderWeeks();
+    </script>
+</body>
+</html>
