@@ -16,6 +16,11 @@ export const CONFIG = {
     bike: 40,    // km
     run: 10,     // km
   },
+  // ── Auth ──────────────────────────────────────────────────
+  // Change this password to whatever you want.
+  // After changing it, anyone who previously logged in will
+  // need to log in again (old localStorage token won't match).
+  password: 'triathlon2026',
 };
 
 // ============================================================
