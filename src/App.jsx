@@ -1,5 +1,6 @@
 import Header from './components/Header'
 import OverallSummary from './components/OverallSummary'
+import ProgressionChart from './components/ProgressionChart'
 import WeekSection from './components/WeekSection'
 import { trainingData } from './data/trainingData'
 
@@ -18,6 +19,7 @@ export default function App() {
       <main className="relative max-w-3xl mx-auto px-4 py-6 space-y-4">
         <Header />
         <OverallSummary />
+        <ProgressionChart />
 
         <section aria-label="Training weeks" className="space-y-3">
           {trainingData.weeks.map((week, idx) => (
