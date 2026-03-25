@@ -1,0 +1,25 @@
+name: Auto-recreate dev branch
+
+# Triggers when any branch is deleted in the repo
+on:
+  delete:
+
+permissions:
+  contents: write
+
+jobs:
+  recreate:
+    # Only act on branch deletions (not tag deletions) that match claude/*
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'claude/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Create new dev branch
+        run: |
+          BRANCH="claude/dev-$(date +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH"
+          git push origin "$BRANCH"
+          echo "Created $BRANCH"
